@@ -1,28 +1,8 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.4.0/firebase-app.js";
-import { getFirestore, addDoc, collection } from "https://www.gstatic.com/firebasejs/9.4.0/firebase-firestore.js";
-
-const firebaseConfig = {
-    apiKey: "AIzaSyA3EoOnj0Ka42iul1ltA8kGXRNnNppg0l8",
-    authDomain: "callvideo-bb197.firebaseapp.com",
-    projectId: "callvideo-bb197",
-    storageBucket: "callvideo-bb197.appspot.com",
-    messagingSenderId: "1001320655290",
-    appId: "1:1001320655290:web:74a93aa7b704fe43f99583"
-};
-
-initializeApp(firebaseConfig);
-
-const db = getFirestore();
-var peer = new Peer();
+const randomID = Math.floor(Math.random() * 10000);
+var peer = new Peer(randomID);
 const myCamera = $('#my-camera');
 const friendCamera = $('#friend-camera');
-const server = { 'iceServers': [{ 'urls': 'stun:stun.l.google.com:19302' }] }
-const randomID = Math.floor(Math.random() * 1000000000000000);
-var seftRemote = null
-var friendRemote = null
-const PC = new RTCPeerConnection(server);
-var resource = null
-var video = null
+
 
 function userMedia() {
     return navigator.mediaDevices.getUserMedia({
