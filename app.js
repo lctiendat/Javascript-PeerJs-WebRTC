@@ -91,9 +91,7 @@ $(document).on('click', '.turnoff-camera', (e) => {
     $('.turnoff-camera').addClass('bi-camera-video-off turnon-camera').removeClass('bi-camera-video turnoff-camera')
     userMedia().then(stream => {
         stream.getVideoTracks()[0].enabled = false;
-        myCamera.src = ''
-        myCamera.get(0).srcObject = null
-            // showCamera(myCamera, stream);
+        showCamera(myCamera, stream);
     })
 })
 
