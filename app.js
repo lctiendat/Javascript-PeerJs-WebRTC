@@ -32,7 +32,6 @@ function userMedia() {
 }
 
 function showCamera(whereRemote, stream) {
-    window.localStream = stream;
     whereRemote.get(0).srcObject = stream;
 }
 
@@ -47,7 +46,7 @@ $('#creat-hangout').click(e => {
 
 $('#join-hangout').click(e => {
     Swal.fire({
-        title: 'Nhập ID phòng muốn tham gia',
+        title: 'Enter the room id you want to join',
         input: 'text',
         inputAttributes: {
             autocapitalize: 'on'
@@ -92,11 +91,10 @@ peer.on('call', call => {
 
 $(document).on('click', '.turnoff-camera', (e) => {
     $('.turnoff-camera').addClass('bi-camera-video-off turnon-camera').removeClass('bi-camera-video turnoff-camera')
-        // userMedia().then(stream => {
-        //         stream.getVideoTracks()[0].enabled = false;
-        //         showCamera(myCamera, stream);
-        //     })
-    localStream.getVideoTracks()[0].stop()
+    userMedia().then(stream => {
+        stream.getVideoTracks()[0].stop();
+        showCamera(myCamera, stream);
+    })
 })
 
 $(document).on('click', '.turnon-camera', (e) => {
@@ -126,8 +124,4 @@ $(document).on('click', '.turnon-volume', (e) => {
 
 peer.on('open', id => {
     $('#roomID').append(id)
-})
-
-peer.on('disconnected', () => {
-    console.log('disconnect');
 })
