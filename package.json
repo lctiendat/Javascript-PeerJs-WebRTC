@@ -1,0 +1,15 @@
+{
+  "dependencies": {
+    "firebase": "^9.6.8",
+    "peerjs": "^1.3.2"
+  },
+  "name": "callvideo",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
