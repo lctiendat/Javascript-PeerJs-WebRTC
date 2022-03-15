@@ -32,20 +32,15 @@ function userMedia() {
 }
 
 function showCamera(whereRemote, stream) {
+    window.localStream = stream;
     whereRemote.get(0).srcObject = stream;
 }
-
-
 
 $('#creat-hangout').click(e => {
     $('.show-camera').addClass('d-block').removeClass('d-none')
     $('.show-room').addClass('d-block').removeClass('d-none')
     $('.action').addClass('d-none').removeClass('d-block')
     userMedia().then(stream => {
-        stream.getVideoTracks().length == 0 ? $('.list-action li:first-child i').addClass('bi-camera-video-off turnon-camera') :
-            $('.list-action li:first-child i').addClass('bi-camera-video turnoff-camera')
-        stream.getAudioTracks().length == 0 ? $('.list-action li:last-child i').addClass('bi-volume-mute turnon-volume') :
-            $('.list-action li:last-child i').addClass('bi-volume-down turnoff-volume')
         showCamera(myCamera, stream);
     })
 })
@@ -61,38 +56,47 @@ $('#join-hangout').click(e => {
         confirmButtonText: 'Tham gia',
     }).then((result) => {
         if (result.isConfirmed) {
-            $('.show-camera').addClass('d-block').removeClass('d-none')
-            $('.show-camera-friend').removeClass('d-none').addClass('d-block')
-            $('.action').addClass('d-none').removeClass('d-block')
-            const idRoom = result.value
-            userMedia().then(stream => {
-                showCamera(myCamera, stream);
-                const call = peer.call(idRoom, stream);
-                call.on('stream', friendStream => {
-                    showCamera(friendCamera, friendStream);
+            if (result.value !== '') {
+                $('.show-camera').addClass('d-block').removeClass('d-none')
+                $('.show-camera-friend').removeClass('d-none').addClass('d-block')
+                $('.action').addClass('d-none').removeClass('d-block')
+                const idRoom = result.value
+                userMedia().then(stream => {
+                    showCamera(myCamera, stream);
+                    const call = peer.call(idRoom, stream);
+                    call.on('stream', friendStream => {
+                        showCamera(friendCamera, friendStream);
+                    })
                 })
-            })
+            } else {
+                alert(`ID Room not empty`)
+            }
         }
     })
 })
 
+
+
 peer.on('call', call => {
     userMedia().then(stream => {
-        window.localStream = stream;
         $('.show-camera-friend').removeClass('d-none').addClass('d-block')
         call.answer(stream);
         call.on('stream', friendStream => {
             showCamera(friendCamera, friendStream);
+        })
+        call.on('error', err => {
+            alert(err)
         })
     })
 })
 
 $(document).on('click', '.turnoff-camera', (e) => {
     $('.turnoff-camera').addClass('bi-camera-video-off turnon-camera').removeClass('bi-camera-video turnoff-camera')
-    userMedia().then(stream => {
-        stream.getVideoTracks()[0].enabled = false;
-        showCamera(myCamera, stream);
-    })
+        // userMedia().then(stream => {
+        //         stream.getVideoTracks()[0].enabled = false;
+        //         showCamera(myCamera, stream);
+        //     })
+    localStream.getVideoTracks()[0].stop()
 })
 
 $(document).on('click', '.turnon-camera', (e) => {
@@ -122,4 +126,8 @@ $(document).on('click', '.turnon-volume', (e) => {
 
 peer.on('open', id => {
     $('#roomID').append(id)
+})
+
+peer.on('disconnected', () => {
+    console.log('disconnect');
 })
